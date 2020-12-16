@@ -13,8 +13,8 @@ import {
 //icon
 import iconeHome from '../../../assets/icon/home.png'
 //FA
-import { FAIcon } from '@fortawesome/react-native-fontawesome';
-import { faLock,faAirFreshener,faAnchor } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon  } from '@fortawesome/react-native-fontawesome';
+import * as fa from '@fortawesome/free-solid-svg-icons';
 
 
 export default ButtomMenu;
@@ -22,64 +22,28 @@ function ButtomMenu ({onHelp,onHome,onOrders,onAbsen,onLogout}){
       return (
           <View style={styles.menu}>
               <TouchableOpacity onPress={onHome} style={styles.icon_menu}>
-                  {/* <FAIcon icon={faLock} size={10} color={"blue"} style={styles.icon_img} /> */}
-                  <Image style={styles.icon_img} source={iconeHome} ></Image>
+                  <FontAwesomeIcon  icon={fa.faHome} size={25} color={"black"} style={styles.icon_img}/>
                   <Text style={styles.icon_text}>Home</Text>
                 </TouchableOpacity>
               <TouchableOpacity onPress={onOrders} style={styles.icon_menu}>
-                  <Image style={styles.icon_img} source={iconeHome} ></Image>
+                  <FontAwesomeIcon  icon={fa.faSearchLocation} size={25} color={"black"} style={styles.icon_img}/>
                   <Text style={styles.icon_text}>Orders</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={onAbsen} style={styles.icon_menu}>
-                  <Image style={styles.icon_img} source={iconeHome} ></Image>
+                  <FontAwesomeIcon  icon={fa.faMapMarkedAlt} size={25} color={"black"} style={styles.icon_img}/>
                   <Text style={styles.icon_text}>Absen</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={onHelp} style={styles.icon_menu}>
-                  <Image style={styles.icon_img} source={iconeHome} ></Image>
+                  <FontAwesomeIcon  icon={fa.faHandsHelping} size={25} color={"black"} style={styles.icon_img}/>
                   <Text style={styles.icon_text}>Help</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={onLogout} style={styles.icon_menu}>
-                  <Image style={styles.icon_img} source={iconeHome} ></Image>
+                  <FontAwesomeIcon  icon={fa.faSignOutAlt} size={25} color={"black"} style={styles.icon_img}/>
                   <Text style={styles.icon_text}>Logout</Text>
               </TouchableOpacity>
           </View>
       );  
 }
-
-// export default ButtomMenu;
-// function ButtomMenu ({onHelp,opHome,opOrders,onLogout}){
-//   return(
-//     <ButtomMenu_ onHelp={onHelp} opHome={opHome} opOrders={opOrders} onLogout={onLogout}/>
-//   );
-// }
-// export class ButtomMenu_ extends Component{
-//     render(onHelp,opHome,opOrders,onLogout){
-//         return (
-//           <View style={styles.menu}>
-//               <TouchableOpacity onPress={opHome} style={styles.icon_menu}>
-//                   <Image style={styles.icon_img} source={iconeHome} ></Image>
-//                   <Text style={styles.icon_text}>Home</Text>
-//                 </TouchableOpacity>
-//               <TouchableOpacity onPress={opOrders} style={styles.icon_menu}>
-//                   <Image style={styles.icon_img} source={iconeHome} ></Image>
-//                   <Text style={styles.icon_text}>Orders</Text>
-//               </TouchableOpacity>
-//               <TouchableOpacity onPress={onHelp} style={styles.icon_menu}>
-//                   <Image style={styles.icon_img} source={iconeHome} ></Image>
-//                   <Text style={styles.icon_text}>Help</Text>
-//               </TouchableOpacity>
-//               <TouchableOpacity onPress={()=>alert('Inbox')} style={styles.icon_menu}>
-//                   <Image style={styles.icon_img} source={iconeHome} ></Image>
-//                   <Text style={styles.icon_text}>Inbox</Text>
-//               </TouchableOpacity>
-//               <TouchableOpacity onPress={()=>alert('Logout')} style={styles.icon_menu}>
-//                   <Image style={styles.icon_img} source={iconeHome} ></Image>
-//                   <Text style={styles.icon_text}>Logout</Text>
-//               </TouchableOpacity>
-//           </View>
-//         );  
-//     }
-// }
 
 const styles=StyleSheet.create({
     menu:({

@@ -15,7 +15,7 @@ import Axios from 'axios';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 // import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import Geolocation from '@react-native-community/geolocation';
-
+import {getDistance,getPreciseDistance} from 'geolib'
 
 const {width, height} = Dimensions.get('window')
 
@@ -24,17 +24,24 @@ const {width, height} = Dimensions.get('window')
 const ASPECT_RATIO = width / height
 const LATITUDE_DELTA = 0.010//0.0922
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
+const RADIUS=100
 
 export default class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
           loading: true,
-            region: {
+            myLocation: {
+                title: 'My Location',
                 latitude: -6.175392,
                 longitude: 106.827153,
                 latitudeDelta: LATITUDE_DELTA,
                 longitudeDelta: LONGITUDE_DELTA
+            },
+            destination: {
+                title: 'destination',
+                latitude: -6.232209,
+                longitude: 107.059722
             }
         };
     }
@@ -44,42 +51,45 @@ export default class App extends Component {
         Geolocation.getCurrentPosition(
             position => {
                 this.setState({
-                    region: {
+                    myLocation: {
+                        title: 'My Location',
                         latitude: position.coords.latitude,
                         longitude: position.coords.longitude,
                         latitudeDelta: LATITUDE_DELTA,
                         longitudeDelta: LONGITUDE_DELTA,
                     }
                 });
-
-                // const obj=JSON.parse(JSON.stringify(position));
-                // this.setState({latitude: Number(obj.coords.latitude)});
-                // this.setState({longitude: Number(obj.coords.longitude)});
-                // console.log("ini",this.state.region.latitude);
             }
         );
-        // Geolocation.getCurrentPosition(
-        //     position => {
-        //       const initialPosition = JSON.stringify(position);
-        //       console.log("ini",initialPosition);
-        //     //   this.setState({initialPosition});
-        //     },
-        //     error => Alert.alert('Error', JSON.stringify(error)),
-        //     {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
-        //   );
-        //   this.watchID = Geolocation.watchPosition(position => {
-        //     const lastPosition = JSON.stringify(position);
-        //       console.log(lastPosition);
-        //       // this.setState({lastPosition});
-        //   });
 	};
-
+    _getPreciseDistance = () => {
+        var pdis = getPreciseDistance(
+            { latitude: -6.232209, longitude: 107.059722 },
+            { latitude: this.state.myLocation.latitude, longitude: this.state.myLocation.longitude }
+        );
+        alert(`Jarak Lebih Tepat\n ${pdis} Meter`);
+    };
+    renderMapMarkers =(location)=> {
+        console.log("loc",location);
+        return (
+           <MapView.Marker
+              key={location.title}
+              coordinate={{
+                latitude: location.latitude,
+                longitude: location.longitude}}
+                title={location.title}
+                description={"lat: "+location.latitude.toString()+", long: "+location.longitude.toString()} 
+           >
+           </MapView.Marker>
+        )
+      }
 	render() {
         // setInterval(() => {
         //     this.findCoordinates();
         // },5000)//per 5 detik
 		return (
             <View style={styles.container}>
+                
 
                 <MapView provider={PROVIDER_GOOGLE}
                     showsUserLocation={true}
@@ -89,23 +99,39 @@ export default class App extends Component {
                     style={styles.map}
                     // style={{ flex: 1, width: window.width }} //window pake Dimensions
                     region={{
-                        latitude: this.state.region.latitude,
-                        longitude: this.state.region.longitude,
-                        latitudeDelta: this.state.region.latitudeDelta,
-                        longitudeDelta: this.state.region.latitudeDelta
+                        latitude: this.state.myLocation.latitude,
+                        longitude: this.state.myLocation.longitude,
+                        latitudeDelta: this.state.myLocation.latitudeDelta,
+                        longitudeDelta: this.state.myLocation.latitudeDelta
                         }} >
-                <MapView.Marker
+                {this.renderMapMarkers(this.state.myLocation)}
+                {this.renderMapMarkers(this.state.destination)}
+                {/* {this.renderMapMarkers(this.state.myLocation.latitude,this.state.myLocation.longitude)}
+                {this.renderMapMarkers(this.state.destination.latitude,this.state.destination.longitude)} */}
+                <MapView.Circle
+                key = { (this.state.destination.latitude + this.state.destination.longitude).toString() }
+                center = { this.state.destination }
+                radius = { RADIUS }
+                strokeWidth = { 1 }
+                strokeColor = { '#1a66ff' }
+                fillColor = { 'rgba(230,238,255,0.5)' }
+                />
+                {/* <MapView.Marker
                     coordinate={{
-                        latitude: this.state.region.latitude,
-                        longitude: this.state.region.longitude
+                        latitude: this.state.myLocation.latitude,
+                        longitude: this.state.myLocation.longitude
                         }}
-                    // title="Lokasi"
-                    description={"lat: "+this.state.region.latitude+", long: "+this.state.region.longitude} />
+                    title="Position"
+                    description={"lat: "+this.state.myLocation.latitude.toString()+", long: "+this.state.myLocation.longitude.toString()} /> */}
                 </MapView>
 
                 <TouchableOpacity onPress={this.findCoordinates}
                         style={{backgroundColor:'#68a0cf',borderRadius:15,margin:20,padding:10}}>
                         <Text style={{fontSize:18,textAlign:"center",color:"#fff"}}>Locate Me</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={this._getPreciseDistance}
+                        style={{backgroundColor:'#68a0cf',borderRadius:15,margin:20,padding:10}}>
+                        <Text style={{fontSize:18,textAlign:"center",color:"#fff"}}>getPreciseDistance</Text>
                 </TouchableOpacity>
 
             </View>
@@ -113,7 +139,6 @@ export default class App extends Component {
 		);
 	}
 }
-
 
 const styles = StyleSheet.create({
         container: {

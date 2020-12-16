@@ -15,14 +15,14 @@ import {
 import Axios from 'axios';
 import * as Keychain from 'react-native-keychain';
 import * as api from '../../../config/API';
+import Ses from '../../../config/Ses';
 
 export default class App extends Component{
     constructor(props){
         super(props);
         this.state={
             username:null,
-            password:null,
-            islogin:false
+            password:null
         }
     }
     async getCek() {
@@ -30,8 +30,10 @@ export default class App extends Component{
             // Retrieve the credentials
             const credentials = await Keychain.getGenericPassword();
             if (credentials) {
+                const obj=JSON.parse(credentials.password);
+                Ses.setCurrentUser(obj);
                 this.props.navigation.push('Home');
-                console.log("Login "+ credentials.username);
+                console.log("Login "+ credentials.username,Ses.getCurrentUser());
             } else {
                 console.log('Login: No credentials stored '+credentials);
             }
@@ -40,7 +42,7 @@ export default class App extends Component{
         }
         // await Keychain.resetGenericPassword();
     }
-
+   
     render(){
         this.getCek();
 
@@ -61,6 +63,9 @@ export default class App extends Component{
         );
     }
 }
+
+
+
 
 export const getData=(t,username,password)=>{
     Keychain.resetGenericPassword();
