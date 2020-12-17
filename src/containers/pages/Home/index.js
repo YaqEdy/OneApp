@@ -42,7 +42,7 @@ export default class Home extends Component{
           onHome={()=>this.props.navigation.push('Home')}
           onOrders={()=>this.props.navigation.push('Crud')}
           onAbsen={()=>this.props.navigation.push('Location')}
-          onHelp={()=>this.props.navigation.push('Login')}
+          onHelp={()=>this.props.navigation.push('ScanQR')}
           onLogout={()=>logout(this)}
           />
         </View>

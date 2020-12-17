@@ -35,7 +35,7 @@ function ButtomMenu ({onHelp,onHome,onOrders,onAbsen,onLogout}){
               </TouchableOpacity>
               <TouchableOpacity onPress={onHelp} style={styles.icon_menu}>
                   <FontAwesomeIcon  icon={fa.faHandsHelping} size={25} color={"black"} style={styles.icon_img}/>
-                  <Text style={styles.icon_text}>Help</Text>
+                  <Text style={styles.icon_text}>Scan QR</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={onLogout} style={styles.icon_menu}>
                   <FontAwesomeIcon  icon={fa.faSignOutAlt} size={25} color={"black"} style={styles.icon_img}/>

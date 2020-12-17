@@ -9,6 +9,7 @@ import {
   Image,
   TextInput
 } from 'react-native';
+import * as Keychain from 'react-native-keychain';
 
 //FA
 import { FontAwesomeIcon  } from '@fortawesome/react-native-fontawesome';
