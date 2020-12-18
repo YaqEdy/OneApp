@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   TouchableHighlight
 } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
 import Axios from 'axios';
 import * as Keychain from 'react-native-keychain';
 import * as api from '../../../config/API';
@@ -22,10 +23,19 @@ export default class App extends Component{
         super(props);
         this.state={
             username:null,
-            password:null
+            password:null,
+            device_id:null
         }
     }
-    async getCek() {
+    _getDevice = async () => {
+        try {
+            this.state.device_id=await DeviceInfo.getAndroidId();
+            console.log("device_id: ",this.state.device_id);
+        } catch (e) {
+          console.log("Error: ",e);
+        }
+      }
+    async _getCek() {
         try {
             // Retrieve the credentials
             const credentials = await Keychain.getGenericPassword();
@@ -44,7 +54,8 @@ export default class App extends Component{
     }
    
     render(){
-        this.getCek();
+        this._getDevice();
+        this._getCek();
 
         return (
             <View>
@@ -53,7 +64,7 @@ export default class App extends Component{
                     <TextInput placeholder="Username" style={styles.input} onChangeText={val => this.setState({username: val})}/>
                     <TextInput placeholder="Password" secureTextEntry={true} style={styles.input} onChangeText={val => this.setState({password: val})}/>
                     
-                    <TouchableOpacity onPress={()=>getData(this,this.state.username,this.state.password)}
+                    <TouchableOpacity onPress={()=>getData(this,this.state.username,this.state.password,this.state.device_id)}
                         style={{backgroundColor:'#68a0cf',borderRadius:25,margin:10,padding:20}}>
                         <Text style={{fontSize:18,textAlign:"center",color:"#fff"}}>Login</Text>
                     </TouchableOpacity>
@@ -67,11 +78,12 @@ export default class App extends Component{
 
 
 
-export const getData=(t,username,password)=>{
+export const getData=(t,username,password,device_id)=>{
     Keychain.resetGenericPassword();
     var data={
         'username': username,
-        'password': password
+        'password': password,
+        'device_id': device_id
     }
     Axios({
         url: `${api.GetUrl()}/Login`,
@@ -83,13 +95,50 @@ export const getData=(t,username,password)=>{
         data: JSON.stringify(data),
     })
     .then(res=>{
-        if(Boolean(res.data.success)){
+        console.log('id usr: ',res.data.data[0].id_user);
+
+        if(Boolean(!res.data.device_id) || res.data.data[0].is_login=='Y'){
+            Alert.alert(
+                'Peringatan',
+                (res.data.data[0].device_id==null)?"Yakin Login?":res.data.alert_device_id,
+                [
+                    {
+                        text:'Tidak',
+                        // onPress:()=>ToastAndroid.showWithGravity("Tidak",ToastAndroid.SHORT,ToastAndroid.CENTER)
+                    },
+                    {
+                        text:'Ya',
+                        onPress:()=>
+                            Axios({
+                            url: `${api.GetUrl()}/Login/updateDevice/${res.data.data[0].id_user}`,
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                    ,'Token' :`${api.GetToken()}`
+                                },
+                                method: 'Post',
+                                data: JSON.stringify(data),
+                            })
+                            .then(res2=>{
+                                if(Boolean(res2.data.success)){
+                                    t.props.navigation.push('Home');
+                                    console.log('res: ',res.data.data);
+                                    
+                                    Keychain.setGenericPassword(username,JSON.stringify(res.data.data[0]));
+                                }
+                                ToastAndroid.showWithGravity(res.data.message,ToastAndroid.SHORT,ToastAndroid.CENTER);
+                            })
+                    }
+                ]
+    
+            );
+           
+        }else{
             t.props.navigation.push('Home');
             console.log('log: ',res.data.data);
             
             Keychain.setGenericPassword(username,JSON.stringify(res.data.data[0]));
+            ToastAndroid.showWithGravity(res.data.message,ToastAndroid.SHORT,ToastAndroid.CENTER);
         }
-        ToastAndroid.showWithGravity(res.data.message,ToastAndroid.SHORT,ToastAndroid.CENTER);
     })
     .catch(error=>{
         console.warn('log',error);

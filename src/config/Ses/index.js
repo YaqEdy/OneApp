@@ -4,21 +4,45 @@ class User {
     constructor() {}
 
     static currentUser = {
+      id_user: 0,
+      nik: '',
       username: '',
       nama: '',
       password: '',
+      device_id:'',
       islogin: false,
-      load: false
+      device_id:'',
+      title:'destination',
+      latitude:'-6.175392',
+      longitude:'106.827153',
+      radius:'',
+      pin_color:''
     };
     static setCurrentUser(obj) {
+        this.currentUser.id_user=obj.id_user;
+        this.currentUser.nik=obj.nik;
         this.currentUser.username=obj.username;
         this.currentUser.nama=obj.nama;
         this.currentUser.islogin=true;
+        this.currentUser.device_id=obj.device_id;
+        this.currentUser.title=obj.title;
+        this.currentUser.latitude=obj.latitude;
+        this.currentUser.longitude=obj.longitude;
+        this.currentUser.radius=obj.radius;
+        this.currentUser.pin_color=obj.pin_color;
     }
     static setResetCurrentUser() {
+        this.currentUser.id_user=0;
+        this.currentUser.nik="";
         this.currentUser.username="";
         this.currentUser.nama="";
         this.currentUser.islogin=false;
+        this.currentUser.device_id="";
+        this.currentUser.title="";
+        this.currentUser.latitude="";
+        this.currentUser.longitude="";
+        this.currentUser.radius="";
+        this.currentUser.pin_color="";
     }
     static getCurrentUser() {
       return this.currentUser;

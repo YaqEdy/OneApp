@@ -1,12 +1,16 @@
 import React,{Component} from 'react';
 import {
   StyleSheet,
+  ToastAndroid,
   View,
 } from 'react-native';
 import * as Keychain from 'react-native-keychain';
+import Axios from 'axios';
+import DeviceInfo from 'react-native-device-info';
 
 import Ses from '../../../config/Ses';
 
+import * as api from '../../../config/API';
 import Search from '../../components/Search';
 import Hay from '../../components/Hay';
 import TopContent from '../Home/TopContent';
@@ -14,6 +18,19 @@ import MainFeature from '../Home/MainFeature';
 import ButtomMenu from '../../components/ButtomMenu';
 
 export default class Home extends Component{
+  getDataAsync = async () => {
+    let deviceJSON = {};
+    try {
+      deviceJSON.androidId = await DeviceInfo.getAndroidId();
+      deviceJSON.brand = await DeviceInfo.getBrand();
+      deviceJSON.DeviceId = await DeviceInfo.getDeviceId();
+      deviceJSON.DeviceName = await DeviceInfo.getDeviceName();
+      console.log("Data: ",deviceJSON);
+    } catch (e) {
+      console.log("Error: ",e);
+    }
+  }
+
   getSes(){
     // console.log("Home1 ",Ses.getCurrentUser().islogin);
     if(!Ses.getCurrentUser().islogin){
@@ -28,6 +45,7 @@ export default class Home extends Component{
   }
   
     render(){
+      this.getDataAsync();
       this.getSes();
 
       return (
@@ -51,8 +69,24 @@ export default class Home extends Component{
 }
 
 export const logout=(t)=>{
-  Keychain.resetGenericPassword();
-  Ses.setResetCurrentUser();
-  t.props.navigation.push('Login');
+  Axios({
+    url: `${api.GetUrl()}/Login/logout/${Ses.getCurrentUser().id_user}`,
+        headers: {
+            'Content-Type': 'application/json'
+            ,'Token' :`${api.GetToken()}`
+        },
+        method: 'Post',
+        // data: JSON.stringify(data),
+    })
+    .then(res=>{
+        if(Boolean(res.data.success)){
+          Keychain.resetGenericPassword();
+          Ses.setResetCurrentUser();
+          t.props.navigation.push('Login');
+        }
+        ToastAndroid.showWithGravity(res.data.message,ToastAndroid.SHORT,ToastAndroid.CENTER);
+    })
+
 }
+
 const styles=StyleSheet.create({});
