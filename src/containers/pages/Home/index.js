@@ -34,7 +34,7 @@ export default class Home extends Component{
   getSes(){
     // console.log("Home1 ",Ses.getCurrentUser().islogin);
     if(!Ses.getCurrentUser().islogin){
-      Ses.getSes("home").then((s)=>{
+      Ses.getSes().then((s)=>{
         if(!s){
           this.props.navigation.push('Login');
         // console.log("Home2 ",s);
@@ -58,7 +58,7 @@ export default class Home extends Component{
           </View>
           <ButtomMenu 
           onHome={()=>this.props.navigation.push('Home')}
-          onOrders={()=>this.props.navigation.push('Crud')}
+          onOrders={()=>this.props.navigation.push('ListAbsensi')}
           onAbsen={()=>this.props.navigation.push('Location')}
           onHelp={()=>this.props.navigation.push('ScanQR')}
           onLogout={()=>logout(this)}

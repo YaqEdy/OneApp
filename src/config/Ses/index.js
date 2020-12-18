@@ -12,6 +12,7 @@ class User {
       device_id:'',
       islogin: false,
       device_id:'',
+      fg_location:'',
       title:'destination',
       latitude:'-6.175392',
       longitude:'106.827153',
@@ -25,6 +26,7 @@ class User {
         this.currentUser.nama=obj.nama;
         this.currentUser.islogin=true;
         this.currentUser.device_id=obj.device_id;
+        this.currentUser.fg_location=obj.fg_location;
         this.currentUser.title=obj.title;
         this.currentUser.latitude=obj.latitude;
         this.currentUser.longitude=obj.longitude;
@@ -38,6 +40,7 @@ class User {
         this.currentUser.nama="";
         this.currentUser.islogin=false;
         this.currentUser.device_id="";
+        this.currentUser.fg_location="";
         this.currentUser.title="";
         this.currentUser.latitude="";
         this.currentUser.longitude="";
@@ -48,7 +51,7 @@ class User {
       return this.currentUser;
     }
 
-    static async getSes(p) {
+    static async getSes() {
         try {
             // Retrieve the credentials
             const credentials = await Keychain.getGenericPassword();

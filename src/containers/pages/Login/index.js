@@ -61,7 +61,7 @@ export default class App extends Component{
             <View>
                 <Text style={{marginTop:60,textAlign:'center',fontSize:25,fontWeight:"bold"}}>Login Sistem</Text>
                 <View style={{marginHorizontal:12,marginTop:30}}>
-                    <TextInput placeholder="Username" style={styles.input} onChangeText={val => this.setState({username: val})}/>
+                    <TextInput placeholder="Username / Email" style={styles.input} onChangeText={val => this.setState({username: val})}/>
                     <TextInput placeholder="Password" secureTextEntry={true} style={styles.input} onChangeText={val => this.setState({password: val})}/>
                     
                     <TouchableOpacity onPress={()=>getData(this,this.state.username,this.state.password,this.state.device_id)}
@@ -82,8 +82,7 @@ export const getData=(t,username,password,device_id)=>{
     Keychain.resetGenericPassword();
     var data={
         'username': username,
-        'password': password,
-        'device_id': device_id
+        'password': password
     }
     Axios({
         url: `${api.GetUrl()}/Login`,
@@ -97,7 +96,7 @@ export const getData=(t,username,password,device_id)=>{
     .then(res=>{
         console.log('id usr: ',res.data.data[0].id_user);
 
-        if(Boolean(!res.data.device_id) || res.data.data[0].is_login=='Y'){
+        if(res.data.data[0].device_id!=device_id || res.data.data[0].is_login=='Y'){
             Alert.alert(
                 'Peringatan',
                 (res.data.data[0].device_id==null)?"Yakin Login?":res.data.alert_device_id,

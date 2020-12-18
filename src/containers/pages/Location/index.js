@@ -71,20 +71,25 @@ export default class App extends Component {
         );
 	};
     _getPreciseDistance = () => {
-        var pdis = getPreciseDistance(
-            { latitude: this.state.destination.latitude, longitude: this.state.destination.longitude },
-            { latitude: this.state.myLocation.latitude, longitude: this.state.myLocation.longitude }
-        );
         var data={
             'nik': this.state.dtobj.nik,
-            'location': JSON.stringify(this.state.myLocation)
+            'location': this.state.myLocation.latitude.toString()+";"+this.state.myLocation.longitude.toString()
+            // 'location': JSON.stringify(this.state.myLocation)
         }
-        console.log("dtobj: ",this.state.dtobj.radius);
-        if(pdis>Number(this.state.dtobj.radius)){
-            alert(`Anda berada di ${pdis} Meter dari lokasi \n di luar radius yang diizinkan.`);
+        if(this.state.dtobj.fg_location=="Y"){
+            var pdis = getPreciseDistance(
+                { latitude: this.state.destination.latitude, longitude: this.state.destination.longitude },
+                { latitude: this.state.myLocation.latitude, longitude: this.state.myLocation.longitude }
+            );
+            if(pdis>Number(this.state.dtobj.radius)){
+                alert(`Anda berada di ${pdis} Meter dari lokasi \n di luar radius yang diizinkan.`);
+            }else{
+                saveAbsensi(data,this);
+            }
         }else{
-            saveAbsensi(data);
+            saveAbsensi(data,this);
         }
+
     };
     renderMapMarkers =(location)=> {
         return (
@@ -160,10 +165,10 @@ export default class App extends Component {
 		);
 	}
 }
-export const saveAbsensi=(data)=>{
+export const saveAbsensi=(data,t)=>{
     console.log("dt",JSON.stringify(data));
     Axios({
-        url: `${api.GetUrl()}/Login/absen`,
+        url: `${api.GetUrl()}/Users/absen`,
         headers: {
             'Content-Type': 'application/json' 
             ,'Token' :`${api.GetToken()}`
@@ -174,6 +179,7 @@ export const saveAbsensi=(data)=>{
     .then(res=>{
         if(Boolean(res.data.success)){
             console.log('res: ',res.data.data);
+            t.props.navigation.push('ListAbsensi');
         }
         ToastAndroid.showWithGravity(res.data.message,ToastAndroid.SHORT,ToastAndroid.CENTER);
     })

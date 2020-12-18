@@ -25,7 +25,7 @@ export default class Search extends Component{
   }
   getSes(){
     if(this.state.nama==""){
-      Ses.getSes("hay").then((s)=>{
+      Ses.getSes().then((s)=>{
         if(s){
          this.setState({
            nama:Ses.getCurrentUser().nama

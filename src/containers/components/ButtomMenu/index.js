@@ -27,13 +27,14 @@ function ButtomMenu ({onHelp,onHome,onOrders,onAbsen,onLogout}){
                 </TouchableOpacity>
               <TouchableOpacity onPress={onOrders} style={styles.icon_menu}>
                   <FontAwesomeIcon  icon={fa.faSearchLocation} size={25} color={"black"} style={styles.icon_img}/>
-                  <Text style={styles.icon_text}>Orders</Text>
+                  <Text style={styles.icon_text}>List Absensi</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={onAbsen} style={styles.icon_menu}>
                   <FontAwesomeIcon  icon={fa.faMapMarkedAlt} size={25} color={"black"} style={styles.icon_img}/>
                   <Text style={styles.icon_text}>Absen</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={onHelp} style={styles.icon_menu}>
+              <TouchableOpacity onPress={()=>alert("coming soon")} style={styles.icon_menu}>
+              {/* <TouchableOpacity onPress={onHelp} style={styles.icon_menu}> */}
                   <FontAwesomeIcon  icon={fa.faHandsHelping} size={25} color={"black"} style={styles.icon_img}/>
                   <Text style={styles.icon_text}>Scan QR</Text>
               </TouchableOpacity>
