@@ -106,7 +106,7 @@ export default class App extends Component {
         )
       }
 	render() {
-            this._findCoordinates();
+            // this._findCoordinates();
         // setInterval(() => {
         //     this.findCoordinates();
         // },5000)//per 5 detik
@@ -166,7 +166,7 @@ export default class App extends Component {
 	}
 }
 export const saveAbsensi=(data,t)=>{
-    console.log("dt",JSON.stringify(data));
+    // console.log("dt",JSON.stringify(data));
     Axios({
         url: `${api.GetUrl()}/Users/absen`,
         headers: {
@@ -177,14 +177,15 @@ export const saveAbsensi=(data,t)=>{
         data: JSON.stringify(data),
     })
     .then(res=>{
+        ToastAndroid.showWithGravity(res.data.message,ToastAndroid.SHORT,ToastAndroid.CENTER);
         if(Boolean(res.data.success)){
-            console.log('res: ',res.data.data);
+            // console.log('res: ',res.data.data);
             t.props.navigation.push('ListAbsensi');
         }
-        ToastAndroid.showWithGravity(res.data.message,ToastAndroid.SHORT,ToastAndroid.CENTER);
     })
     .catch(function (error) {
-        console.log("log err",error);
+        ToastAndroid.showWithGravity(error,ToastAndroid.SHORT,ToastAndroid.CENTER);
+        // console.log("log err",error);
     })
 }
 
