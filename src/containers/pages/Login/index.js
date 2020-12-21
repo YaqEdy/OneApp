@@ -82,7 +82,8 @@ export const getData=(t,username,password,device_id)=>{
     Keychain.resetGenericPassword();
     var data={
         'username': username,
-        'password': password
+        'password': password,
+        'device_id': device_id
     }
     Axios({
         url: `${api.GetUrl()}/Login`,

@@ -173,7 +173,7 @@ export const saveAbsensi=(data,t)=>{
             'Content-Type': 'application/json' 
             ,'Token' :`${api.GetToken()}`
         },
-        method: 'put',
+        method: 'post',
         data: JSON.stringify(data),
     })
     .then(res=>{
