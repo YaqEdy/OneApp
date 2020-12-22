@@ -23,7 +23,10 @@ export default class Search extends Component{
         nama:""
     }
   }
-  getSes(){
+  componentDidMount(){
+    this._getSes();
+  }
+  _getSes(){
     if(this.state.nama==""){
       Ses.getSes().then((s)=>{
         if(s){
@@ -35,7 +38,6 @@ export default class Search extends Component{
     }
   }
   render(){
-    this.getSes();
       return (
         <View style={{marginHorizontal:17,flexDirection:'row'}}>
           <View style={{position:'relative',flex:1}}>

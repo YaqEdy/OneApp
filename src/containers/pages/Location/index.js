@@ -19,6 +19,7 @@ import {getDistance,getPreciseDistance} from 'geolib'
 import { FontAwesomeIcon  } from '@fortawesome/react-native-fontawesome';
 import * as fa from '@fortawesome/free-solid-svg-icons';
 
+import Load from '../../components/Loading';
 import Ses from '../../../config/Ses';
 import * as api from '../../../config/API';
 
@@ -54,7 +55,9 @@ export default class App extends Component {
             }
         };
     }
-
+    componentDidMount(){
+        this._findCoordinates();
+      }
 	_findCoordinates = () => {
         Geolocation.getCurrentPosition(
             position => {
@@ -104,69 +107,70 @@ export default class App extends Component {
            >
            </MapView.Marker>
         )
-      }
+    }
 	render() {
-            // this._findCoordinates();
-        // setInterval(() => {
-        //     this.findCoordinates();
-        // },5000)//per 5 detik
-		return (
-            <View style={styles.container}>
-                
+        if(this.state.loading){
+            return(
+                <Load/>
+            );
+          }else{
+            return (
+                <View style={styles.container}>
+                    <MapView provider={PROVIDER_GOOGLE}
+                        showsUserLocation={true}
+                        showsMyLocationButton={true}
+                        zoomEnabled={true}
+                        zoomControlEnabled={true}
+                        style={styles.map}
+                        // style={{ flex: 1, width: window.width }} //window pake Dimensions
+                        region={{
+                            latitude: this.state.myLocation.latitude,
+                            longitude: this.state.myLocation.longitude,
+                            latitudeDelta: this.state.myLocation.latitudeDelta,
+                            longitudeDelta: this.state.myLocation.latitudeDelta
+                            }} >
+                    {/* {this.renderMapMarkers(this.state.myLocation)} */}
+                    {this.renderMapMarkers(this.state.destination)}
+                    <MapView.Circle
+                    key = { (this.state.destination.latitude + this.state.destination.longitude).toString() }
+                    center = { this.state.destination }
+                    radius = { this.state.destination.radius }
+                    strokeWidth = { 1 }
+                    strokeColor = { '#1a66ff' }
+                    fillColor = { 'rgba(230,238,255,0.5)' }
+                    />
+                    {/* <MapView.Marker
+                        coordinate={{
+                            latitude: this.state.myLocation.latitude,
+                            longitude: this.state.myLocation.longitude
+                            }}
+                        title="Position"
+                        description={"lat: "+this.state.myLocation.latitude.toString()+", long: "+this.state.myLocation.longitude.toString()} /> */}
+                    </MapView>
 
-                <MapView provider={PROVIDER_GOOGLE}
-                    showsUserLocation={true}
-                    showsMyLocationButton={true}
-                    zoomEnabled={true}
-                    zoomControlEnabled={true}
-                    style={styles.map}
-                    // style={{ flex: 1, width: window.width }} //window pake Dimensions
-                    region={{
-                        latitude: this.state.myLocation.latitude,
-                        longitude: this.state.myLocation.longitude,
-                        latitudeDelta: this.state.myLocation.latitudeDelta,
-                        longitudeDelta: this.state.myLocation.latitudeDelta
-                        }} >
-                {/* {this.renderMapMarkers(this.state.myLocation)} */}
-                {this.renderMapMarkers(this.state.destination)}
-                <MapView.Circle
-                key = { (this.state.destination.latitude + this.state.destination.longitude).toString() }
-                center = { this.state.destination }
-                radius = { this.state.destination.radius }
-                strokeWidth = { 1 }
-                strokeColor = { '#1a66ff' }
-                fillColor = { 'rgba(230,238,255,0.5)' }
-                />
-                {/* <MapView.Marker
-                    coordinate={{
-                        latitude: this.state.myLocation.latitude,
-                        longitude: this.state.myLocation.longitude
-                        }}
-                    title="Position"
-                    description={"lat: "+this.state.myLocation.latitude.toString()+", long: "+this.state.myLocation.longitude.toString()} /> */}
-                </MapView>
+                    <View style={{flexDirection:"row"}}>
+                        <TouchableOpacity onPress={this._findCoordinates}
+                            style={{borderRadius:25,borderColor:"blue",borderWidth:2,margin:20,padding:10}}>
+                            <FontAwesomeIcon  icon={fa.faLocationArrow} size={25} color={"blue"} style={styles.icon_img}/>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={this._getPreciseDistance}
+                            style={{backgroundColor:'green',borderRadius:15,margin:20,padding:10}}>
+                            <View style={{position:'relative',flex:1}}>
+                                <Text style={{paddingLeft:30,color:'white'}}>Absen</Text>
+                                <FontAwesomeIcon  icon={fa.faCheckCircle} size={25} color={"white"} style={{position:'absolute'}}/>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
 
-                <View style={{flexDirection:"row"}}>
-                    <TouchableOpacity onPress={this._findCoordinates}
-                        style={{borderRadius:25,borderColor:"blue",borderWidth:2,margin:20,padding:10}}>
-                        <FontAwesomeIcon  icon={fa.faLocationArrow} size={25} color={"blue"} style={styles.icon_img}/>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={this._getPreciseDistance}
-                        style={{backgroundColor:'green',borderRadius:15,margin:20,padding:10}}>
-                        <View style={{position:'relative',flex:1}}>
-                            <Text style={{paddingLeft:30,color:'white'}}>Absen</Text>
-                            <FontAwesomeIcon  icon={fa.faCheckCircle} size={25} color={"white"} style={{position:'absolute'}}/>
-                        </View>
-                    </TouchableOpacity>
                 </View>
 
-            </View>
-
-		);
+            );
+        }
 	}
 }
 export const saveAbsensi=(data,t)=>{
-    // console.log("dt",JSON.stringify(data));
+      t.setState({loading: true});//spinner
+      // console.log("dt",JSON.stringify(data));
     Axios({
         url: `${api.GetUrl()}/Users/absen`,
         headers: {
@@ -186,6 +190,13 @@ export const saveAbsensi=(data,t)=>{
     .catch(function (error) {
         ToastAndroid.showWithGravity(error,ToastAndroid.SHORT,ToastAndroid.CENTER);
         // console.log("log err",error);
+    })
+    .finally(f=>{
+        t.setState({loading: false});//spinner
+    })
+    .catch(error=>{
+        t.setState({loading: false});//spinner
+        ToastAndroid.showWithGravity(error,ToastAndroid.SHORT,ToastAndroid.CENTER);
     })
 }
 

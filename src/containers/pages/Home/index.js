@@ -25,7 +25,7 @@ export default class Home extends Component{
         loading:false,
         device_id:null
       }
-}
+  }
   componentDidMount(){
     this._getDataAsync();
     this._getSes();
@@ -33,7 +33,6 @@ export default class Home extends Component{
   }
 
   _getDataAsync = async () => {
-    let deviceJSON = {};
     try {
       this.state.device_id= await DeviceInfo.getAndroidId();
       // deviceJSON.androidId = await DeviceInfo.getAndroidId();
@@ -56,36 +55,35 @@ export default class Home extends Component{
         }
       });
     }
-    
   }
   
-    render(){
-      // this.getDataAsync();
-      // this.getSes();
-      if(this.state.loading){
-        return(
-            <Load/>
-        );
-      }else{
-        return (
-          <View style={{flex:1}}>
-            <View style={{ backgroundColor:'white',flex:1,paddingTop:15}}>
-              {/* <Search/> */}
-              <Hay/>
-              <TopContent/>
-              <MainFeature/>
-            </View>
-            <ButtomMenu 
-            onHome={()=>this.props.navigation.push('Home')}
-            onOrders={()=>this.props.navigation.push('ListAbsensi')}
-            onAbsen={()=>this.props.navigation.push('Location')}
-            onHelp={()=>this.props.navigation.push('ScanQR')}
-            onLogout={()=>logout(this)}
-            />
+  render(){
+    // this.getDataAsync();
+    // this.getSes();
+    if(this.state.loading){
+      return(
+          <Load/>
+      );
+    }else{
+      return (
+        <View style={{flex:1}}>
+          <View style={{ backgroundColor:'white',flex:1,paddingTop:15}}>
+            {/* <Search/> */}
+            <Hay/>
+            <TopContent/>
+            <MainFeature/>
           </View>
-        );  
-      }
+          <ButtomMenu 
+          onHome={()=>this.props.navigation.push('Home')}
+          onOrders={()=>this.props.navigation.push('ListAbsensi')}
+          onAbsen={()=>this.props.navigation.push('Location')}
+          onHelp={()=>this.props.navigation.push('ScanQR')}
+          onLogout={()=>logout(this)}
+          />
+        </View>
+      );  
     }
+  }
 }
 
 export const logout=(t)=>{
@@ -117,6 +115,7 @@ export const logout=(t)=>{
 }
 
 export const getDataAll=(t)=>{
+  // console.log("getDataAll",Ses.getCurrentUser().id_user);
   Axios({
     url: `${api.GetUrl()}/Users/getDataAll/${Ses.getCurrentUser().id_user}`,
     headers: {
@@ -128,17 +127,24 @@ export const getDataAll=(t)=>{
     .then(res=>{
         if(Boolean(res.data.success)){
             const obj=JSON.parse(JSON.stringify(res.data.data[0]));
+            Ses.setCurrentUser(obj);
             // console.log("OBJ: ",obj);
             if(t.state.device_id!=obj.device_id){
               Keychain.resetGenericPassword();
               t.props.navigation.push('Login');
-              ToastAndroid.showWithGravity(res.data.msgDeviceId,ToastAndroid.LONG,ToastAndroid.CENTER);
+              if(obj.device_id!=null){
+                ToastAndroid.showWithGravity(res.data.msgDeviceId,ToastAndroid.LONG,ToastAndroid.CENTER);
+              }
             }
-
-            Ses.setCurrentUser(obj);
+        }else{
+          console.log("OBJ: 2");
+          getDataAll(t);
         }
     })
-
+    .catch(error=>{
+      console.log("OBJ: 3");
+      getDataAll(t);
+    })
 }
 
 const styles=StyleSheet.create({});
