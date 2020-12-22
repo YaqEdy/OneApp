@@ -3,6 +3,16 @@ import * as Keychain from 'react-native-keychain';
 class User {
     constructor() {}
 
+    // static load={
+    //     loading:false
+    // }
+    // static setLoad(param){
+    //     this.load=param
+    // }
+    // static getLoad() {
+    //     return this.load;
+    // }
+
     static currentUser = {
       id_user: 0,
       nik: '',

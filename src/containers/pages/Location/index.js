@@ -36,7 +36,7 @@ export default class App extends Component {
         super(props);
         this.state = {
             dtobj:obj,
-            loading: true,
+            loading: false,
             myLocation: {
                 title: 'My Location',
                 latitude: -6.175392,
