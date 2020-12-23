@@ -9,6 +9,7 @@ import Axios from 'axios';
 import DeviceInfo from 'react-native-device-info';
 
 import Ses from '../../../config/Ses';
+import RunBack from '../../../config/Ses/RunBackground';
 import Load from '../../components/Loading';
 
 import * as api from '../../../config/API';
@@ -29,7 +30,8 @@ export default class Home extends Component{
   componentDidMount(){
     this._getDataAsync();
     this._getSes();
-    getDataAll(this);
+    // getDataAll(this);
+    RunBack.goRunBack(this);
   }
 
   _getDataAsync = async () => {
