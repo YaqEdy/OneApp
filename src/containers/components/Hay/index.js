@@ -9,7 +9,7 @@ import {
   Image,
   TextInput
 } from 'react-native';
-
+import {sty} from './styles';
 //FA
 import { FontAwesomeIcon  } from '@fortawesome/react-native-fontawesome';
 import * as fa from '@fortawesome/free-solid-svg-icons';
@@ -39,9 +39,9 @@ export default class Search extends Component{
   }
   render(){
       return (
-        <View style={{marginHorizontal:17,flexDirection:'row'}}>
-          <View style={{position:'relative',flex:1}}>
-            <Text style={styles.cari}>{"Hay "+this.state.nama}</Text>
+        <View style={sty.container}>
+          <View style={sty.view1}>
+            <Text style={sty.hay}>{"Hay "+this.state.nama}</Text>
             <FontAwesomeIcon  icon={fa.faCertificate} size={25} color={"orange"} style={{position:'absolute'}}/>
           </View>
           {/* <View style={{width:35,alignItems:'center',justifyContent:'center'}}> 
@@ -53,7 +53,7 @@ export default class Search extends Component{
 }
 
 const styles=StyleSheet.create({
-  cari:({
+  cari:{
     paddingTop:3,
     height:40,
     fontSize:13,
@@ -61,6 +61,6 @@ const styles=StyleSheet.create({
     paddingRight:20,
     backgroundColor:'white',
     marginRight:18
-  }),
+  }
   
 });
