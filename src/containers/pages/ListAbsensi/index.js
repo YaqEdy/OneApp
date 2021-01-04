@@ -34,6 +34,14 @@ export default class App extends Component {
         getData(this);
     }
 
+    _btnRefresh=()=>{
+        return(
+            <TouchableOpacity onPress={()=>getData(this)} style={{padding:10,alignSelf:"flex-end",position:"absolute",bottom:15,backgroundColor:"blue",borderRadius:25}}>
+                <FontAwesomeIcon  icon={fa.faSyncAlt} size={25} color={"white"}/>
+            </TouchableOpacity>
+        );
+    }
+
     render(){
         if(this.state.loading){
             return(
@@ -43,12 +51,13 @@ export default class App extends Component {
             if(this.state.vwAbsensi.length==0){
                 return(
                     <View key="1" style={{borderBottomColor:'#2f3337',borderBottomWidth:1,flex:1}}>
+                        <this._btnRefresh/>
                         <Text style={{padding:20}}>{this.state.nodata}</Text>
                     </View>
                 );
             }
             return(
-                <View>
+                <View style={{flex:1}}>
                     <ScrollView>
                         {this.state.vwAbsensi.map(items=>{
                             return(
@@ -68,11 +77,13 @@ export default class App extends Component {
                             )
                         })}
                     </ScrollView>
+                    <this._btnRefresh/>
                 </View>
             );
         }
     }
 }
+
 
 export const getData=(t)=>{
     t.setState({loading: true});//spinner
