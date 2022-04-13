@@ -1,17 +1,19 @@
 import * as Keychain from 'react-native-keychain';
 
-class User {
+class Models {
     constructor() {}
 
-    // static load={
-    //     loading:false
-    // }
-    // static setLoad(param){
-    //     this.load=param
-    // }
-    // static getLoad() {
-    //     return this.load;
-    // }
+    static currentBtn = {
+      id: 1,
+      color_default:"black",
+      color_change:"green"
+    }
+    static setBtn(a) {
+        this.currentBtn.id=a;
+    }
+    static getBtn() {
+        return this.currentBtn;
+    }
 
     static currentUser = {
       id_user: 0,
@@ -27,7 +29,8 @@ class User {
       latitude:'-6.175392',
       longitude:'106.827153',
       radius:'',
-      pin_color:''
+      pin_color:'',
+      isOTP: false
     };
     static setCurrentUser(obj) {
         this.currentUser.id_user=obj.id_user;
@@ -56,6 +59,10 @@ class User {
         this.currentUser.longitude="";
         this.currentUser.radius="";
         this.currentUser.pin_color="";
+        this.currentUser.isOTP=false;
+    }
+    static setOTP(tf) {
+        this.currentUser.isOTP=tf;
     }
     static getCurrentUser() {
       return this.currentUser;
@@ -83,4 +90,4 @@ class User {
 
 }
 
-export default User;
+export default Models;

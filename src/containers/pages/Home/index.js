@@ -8,6 +8,7 @@ import * as Keychain from 'react-native-keychain';
 import Axios from 'axios';
 import DeviceInfo from 'react-native-device-info';
 
+import G from '../../components/Global';
 import Ses from '../../../config/Ses';
 import RunBack from '../../../config/Ses/RunBackground';
 import Load from '../../components/Loading';
@@ -57,6 +58,9 @@ export default class Home extends Component{
         }
       });
     }
+    if(!Ses.getCurrentUser().isOTP){
+      this.props.navigation.push('Login');
+    }
   }
   
   render(){
@@ -76,10 +80,10 @@ export default class Home extends Component{
             <MainFeature/>
           </View>
           <ButtomMenu 
-          onHome={()=>this.props.navigation.push('Home')}
-          onOrders={()=>this.props.navigation.push('ListAbsensi')}
-          onAbsen={()=>this.props.navigation.push('Location')}
-          onHelp={()=>this.props.navigation.push('ScanQR')}
+          onHome={()=>G.goToScreen(this,1)}
+          onOrders={()=>G.goToScreen(this,2)}
+          onAbsen={()=>G.goToScreen(this,3)}
+          onHelp={()=>G.goToScreen(this,4)}
           onLogout={()=>logout(this)}
           />
         </View>
@@ -103,6 +107,7 @@ export const logout=(t)=>{
         if(Boolean(res.data.success)){
           Keychain.resetGenericPassword();
           Ses.setResetCurrentUser();
+          Ses.setOTP(false);
           t.props.navigation.push('Login');
         }
         ToastAndroid.showWithGravity(res.data.message,ToastAndroid.SHORT,ToastAndroid.CENTER);

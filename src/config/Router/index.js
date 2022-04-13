@@ -8,6 +8,7 @@ import Home from '../../containers/pages/Home';
 import ListAbsensi from '../../containers/pages/ListAbsensi';
 import Crud from '../../containers/pages/Crud';
 import Login from '../../containers/pages/Login';
+import Otp from '../../containers/pages/Login/otp';
 import Location from '../../containers/pages/Location';
 import ScanQR from '../../containers/pages/ScanQR';
 
@@ -55,6 +56,7 @@ export default class App extends Component{
             <Stack.Screen name="ListAbsensi" component={ListAbsensi} options={{headerShown:true,title:"Daftar Absensi"}}/>
             <Stack.Screen name="Location" component={Location} options={{headerShown:true,title:"Absensi"}}/>
             <Stack.Screen name="ScanQR" component={ScanQR} options={{headerShown:true,title:"Scan QR"}}/>
+            <Stack.Screen name="OTP" component={Otp} options={{headerShown:false,title:"OTP"}}/>
             <Stack.Screen name="Login" component={Login} options={{headerShown:false}}/>
           </Stack.Navigator>
         </NavigationContainer>

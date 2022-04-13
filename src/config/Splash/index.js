@@ -14,6 +14,7 @@ export default class App extends Component{
                 <Text style={styles.textStyles}>.....</Text>
                 {/* <FontAwesomeIcon  icon={fa.faSyncAlt} size={100} color={"white"} /> */}
                 {/* <FontAwesomeIcon  icon={fa.faEllipsisH} size={50} color={"white"} /> */}
+                {/* <FontAwesomeIcon  icon={fa.faSitemap} size={50} color={"white"} /> */}
             </View>
         );
     }

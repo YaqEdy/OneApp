@@ -48,8 +48,12 @@ export default class App extends Component{
             const credentials = await Keychain.getGenericPassword();
             if (credentials) {
                 const obj=JSON.parse(credentials.password);
-                Ses.setCurrentUser(obj);
-                this.props.navigation.push('Home');
+                if(!Ses.getCurrentUser().isOTP){
+                    await Keychain.resetGenericPassword();
+                }else{
+                    Ses.setCurrentUser(obj);
+                    this.props.navigation.push('Home');
+                }
                 console.log("Login "+ credentials.username,Ses.getCurrentUser());
             } else {
                 console.log('Login: No credentials stored '+credentials);
@@ -109,7 +113,7 @@ export const getData=(t,username,password,device_id)=>{
         data: JSON.stringify(data),
     })
     .then(res=>{
-        console.log('id usr: ',res.data.data[0]);
+        console.log('id usr: ',res.data);
         Keychain.setGenericPassword(username,JSON.stringify(res.data.data[0]));
 
         if(res.data.data[0].device_id!=device_id || res.data.data[0].is_login=='Y'){
@@ -118,7 +122,7 @@ export const getData=(t,username,password,device_id)=>{
             }else{
                 Alert.alert(
                     'Peringatan',
-                    (res.data.data[0].device_id==null)?"Yakin Login?":res.data.alert_device_id,
+                    res.data.alert_device_id,
                     [
                         {
                             text:'Tidak',
@@ -135,7 +139,12 @@ export const getData=(t,username,password,device_id)=>{
                 );
             }           
         }else{
-            t.props.navigation.push('Home');
+            if(Boolean(res.data.fg_otp)){
+                t.props.navigation.push('OTP');
+            }else{
+                Ses.setOTP(true);
+                t.props.navigation.push('Home');
+            }
             // console.log('log: ',res.data.data);
             ToastAndroid.showWithGravity(res.data.message,ToastAndroid.SHORT,ToastAndroid.CENTER);
         }
@@ -162,7 +171,13 @@ export const updateDevice=(t,data,res)=>{
         })
         .then(res2=>{
             if(Boolean(res2.data.success)){
-                t.props.navigation.push('Home');
+                if(Boolean(res.data.fg_otp)){
+                    t.props.navigation.push('OTP');
+                }else{
+                    Ses.setOTP(true);
+                    t.props.navigation.push('Home');
+                }
+            // t.props.navigation.push('Home');
             }
             ToastAndroid.showWithGravity(res.data.message,ToastAndroid.SHORT,ToastAndroid.CENTER);
         })
